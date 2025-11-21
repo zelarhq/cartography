@@ -27,13 +27,13 @@ class KonnectCertificateToControlPlaneRelProperties(CartographyRelProperties):
 
 
 @dataclass(frozen=True)
-# (:KonnectCertificate)-[:RESOURCE]->(:KonnectControlPlane)
+# (:KonnectControlPlane)-[:RESOURCE]->(:KonnectCertificate)
 class KonnectCertificateToControlPlaneRel(CartographyRelSchema):
     target_node_label: str = "KonnectControlPlane"
     target_node_matcher: TargetNodeMatcher = make_target_node_matcher(
         {"id": PropertyRef("CONTROL_PLANE_ID", set_in_kwargs=True)},
     )
-    direction: LinkDirection = LinkDirection.OUTWARD
+    direction: LinkDirection = LinkDirection.INWARD
     rel_label: str = "RESOURCE"
     properties: KonnectCertificateToControlPlaneRelProperties = (
         KonnectCertificateToControlPlaneRelProperties()

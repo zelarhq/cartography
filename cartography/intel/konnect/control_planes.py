@@ -27,7 +27,7 @@ def sync(
 ) -> List[str]:
     """
     Sync Kong Konnect Control Planes.
-    
+
     :param neo4j_session: Neo4j session
     :param api_token: Kong Konnect API token
     :param api_url: Kong Konnect API base URL
@@ -40,7 +40,7 @@ def sync(
     transformed_data = transform(control_planes_data, org_id)
     load_control_planes(neo4j_session, transformed_data, org_id, update_tag)
     cleanup(neo4j_session, common_job_parameters)
-    
+
     # Return list of control plane IDs for use by other modules
     return [cp["id"] for cp in transformed_data]
 
@@ -49,7 +49,7 @@ def sync(
 def get(api_token: str, api_url: str) -> List[Dict[str, Any]]:
     """
     Fetch control planes from Kong Konnect API.
-    
+
     :param api_token: Kong Konnect API token
     :param api_url: Kong Konnect API base URL
     :return: List of control planes
@@ -59,49 +59,50 @@ def get(api_token: str, api_url: str) -> List[Dict[str, Any]]:
         "Authorization": f"Bearer {api_token}",
         "Content-Type": "application/json",
     }
-    
+
     # Fetch control planes (paginated)
     all_control_planes = []
     url = f"{api_url}/control-planes"
-    
+
     while url:
         logger.info(f"Fetching control planes from {url}")
         response = session.get(url, headers=headers, timeout=_TIMEOUT)
         response.raise_for_status()
         data = response.json()
-        
+
         # Add control planes from this page
         if "data" in data:
             all_control_planes.extend(data["data"])
-        
+
         # Check for next page
         url = data.get("next")
-    
+
     logger.info(f"Fetched {len(all_control_planes)} control planes")
     return all_control_planes
 
 
-def transform(control_planes: List[Dict[str, Any]], org_id: Optional[str]) -> List[Dict[str, Any]]:
+def transform(
+    control_planes: List[Dict[str, Any]], org_id: Optional[str]
+) -> List[Dict[str, Any]]:
     """
     Transform control planes data.
-    
+
     :param control_planes: Raw control planes data from API
     :param org_id: Organization ID
     :return: Transformed control planes data
     """
-    # Use org_id if provided, otherwise use a default value
-    effective_org_id = org_id or "default"
-    
     transformed = []
     for cp in control_planes:
-        transformed.append({
-            "id": cp.get("id"),
-            "name": cp.get("name"),
-            "description": cp.get("description"),
-            "created_at": cp.get("created_at"),
-            "updated_at": cp.get("updated_at"),
-        })
-    
+        transformed.append(
+            {
+                "id": cp.get("id"),
+                "name": cp.get("name"),
+                "description": cp.get("description"),
+                "created_at": cp.get("created_at"),
+                "updated_at": cp.get("updated_at"),
+            }
+        )
+
     return transformed
 
 
@@ -113,7 +114,7 @@ def load_control_planes(
 ) -> None:
     """
     Load control planes into Neo4j.
-    
+
     :param neo4j_session: Neo4j session
     :param data: Transformed control planes data
     :param org_id: Organization ID
@@ -122,7 +123,7 @@ def load_control_planes(
     """
     # Use org_id if provided, otherwise use a default value
     effective_org_id = org_id or "default"
-    
+
     # Load organization node first
     load(
         neo4j_session,
@@ -130,7 +131,7 @@ def load_control_planes(
         [{"id": effective_org_id, "name": effective_org_id}],
         lastupdated=update_tag,
     )
-    
+
     # Load control planes
     load(
         neo4j_session,
@@ -141,10 +142,12 @@ def load_control_planes(
     )
 
 
-def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]) -> None:
+def cleanup(
+    neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]
+) -> None:
     """
     Clean up stale control planes.
-    
+
     :param neo4j_session: Neo4j session
     :param common_job_parameters: Common job parameters
     :return: None
@@ -163,7 +166,7 @@ def run_cleanup_job(
 ) -> None:
     """
     Run a cleanup job to remove stale nodes.
-    
+
     :param cleanup_job_name: Name of the cleanup job
     :param neo4j_session: Neo4j session
     :param common_job_parameters: Common job parameters

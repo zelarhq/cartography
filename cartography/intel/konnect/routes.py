@@ -24,7 +24,7 @@ def get_control_plane_ids(neo4j_session: neo4j.Session) -> List[str]:
     RETURN cp.id as id
     """
     results = neo4j_session.run(query)
-    return [record['id'] for record in results]
+    return [record["id"] for record in results]
 
 
 def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, Any]]:
@@ -66,27 +66,42 @@ def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, A
     return routes
 
 
-def transform(routes_data: List[Dict[str, Any]], control_plane_id: str) -> List[Dict[str, Any]]:
+def transform(
+    routes_data: List[Dict[str, Any]], control_plane_id: str
+) -> List[Dict[str, Any]]:
     """
     Transform routes data to match the KonnectRouteSchema.
     """
     for route in routes_data:
-        route['control_plane_id'] = control_plane_id
+        route["control_plane_id"] = control_plane_id
 
         # Extract service ID if present
-        if 'service' in route and route['service'] and isinstance(route['service'], dict):
-            route['service_id'] = route['service'].get('id')
+        if (
+            "service" in route
+            and route["service"]
+            and isinstance(route["service"], dict)
+        ):
+            route["service_id"] = route["service"].get("id")
         else:
-            route['service_id'] = None
+            route["service_id"] = None
 
         # Convert lists to JSON strings for Neo4j storage
-        for field in ['protocols', 'methods', 'hosts', 'paths', 'snis', 'sources', 'destinations', 'tags']:
+        for field in [
+            "protocols",
+            "methods",
+            "hosts",
+            "paths",
+            "snis",
+            "sources",
+            "destinations",
+            "tags",
+        ]:
             if field in route and route[field]:
                 route[field] = json.dumps(route[field])
 
         # Convert headers dict to JSON string
-        if 'headers' in route and route['headers']:
-            route['headers'] = json.dumps(route['headers'])
+        if "headers" in route and route["headers"]:
+            route["headers"] = json.dumps(route["headers"])
 
     return routes_data
 
@@ -102,7 +117,7 @@ def load_routes(
     Load each route individually to handle different service IDs.
     """
     for route in data:
-        service_id = route.get('service_id')
+        service_id = route.get("service_id")
         load(
             neo4j_session,
             KonnectRouteSchema(),
@@ -113,7 +128,9 @@ def load_routes(
         )
 
 
-def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]) -> None:
+def cleanup(
+    neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]
+) -> None:
     """
     Remove stale routes from the graph.
     """
@@ -122,7 +139,7 @@ def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any])
     WHERE r.lastupdated <> $UPDATE_TAG
     DETACH DELETE r
     """
-    neo4j_session.run(query, UPDATE_TAG=common_job_parameters['UPDATE_TAG'])
+    neo4j_session.run(query, UPDATE_TAG=common_job_parameters["UPDATE_TAG"])
 
 
 @timeit

@@ -1,0 +1,42 @@
+# Mock data for Kong Konnect Services API responses
+
+KONNECT_SERVICES_RESPONSE = {
+    "data": [
+        {
+            "id": "svc-123",
+            "name": "user-service",
+            "host": "api.example.com",
+            "port": 443,
+            "protocol": "https",
+            "path": "/api",
+            "enabled": True,
+            "connect_timeout": 60000,
+            "read_timeout": 60000,
+            "write_timeout": 60000,
+            "retries": 5,
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-20T14:22:00Z",
+            "ca_certificates": ["cert-1", "cert-2"],
+            "tags": ["production", "api"],
+        },
+        {
+            "id": "svc-456",
+            "name": "payment-service",
+            "host": "payments.example.com",
+            "port": 443,
+            "protocol": "https",
+            "path": "/payments",
+            "enabled": True,
+            "connect_timeout": 30000,
+            "read_timeout": 30000,
+            "write_timeout": 30000,
+            "retries": 3,
+            "created_at": "2024-02-01T08:15:00Z",
+            "updated_at": "2024-02-05T16:45:00Z",
+            "ca_certificates": [],
+            "tags": ["production", "payment"],
+        },
+    ],
+    "offset": None,
+}
+

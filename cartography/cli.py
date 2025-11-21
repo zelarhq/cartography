@@ -1366,9 +1366,7 @@ class CLI:
             logger.debug(
                 f"Reading API token for Kong Konnect from environment variable {config.konnect_api_token_env_var}",
             )
-            config.konnect_api_token = os.environ.get(
-                config.konnect_api_token_env_var
-            )
+            config.konnect_api_token = os.environ.get(config.konnect_api_token_env_var)
         else:
             config.konnect_api_token = None
 

@@ -24,7 +24,7 @@ def get_control_plane_ids(neo4j_session: neo4j.Session) -> List[str]:
     RETURN cp.id as id
     """
     results = neo4j_session.run(query)
-    return [record['id'] for record in results]
+    return [record["id"] for record in results]
 
 
 def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, Any]]:
@@ -62,21 +62,25 @@ def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, A
         else:
             break
 
-    logger.info(f"Fetched {len(services)} services for control plane {control_plane_id}")
+    logger.info(
+        f"Fetched {len(services)} services for control plane {control_plane_id}"
+    )
     return services
 
 
-def transform(services_data: List[Dict[str, Any]], control_plane_id: str) -> List[Dict[str, Any]]:
+def transform(
+    services_data: List[Dict[str, Any]], control_plane_id: str
+) -> List[Dict[str, Any]]:
     """
     Transform services data to match the KonnectServiceSchema.
     """
     for service in services_data:
-        service['control_plane_id'] = control_plane_id
+        service["control_plane_id"] = control_plane_id
         # Convert lists to JSON strings for Neo4j storage
-        if 'ca_certificates' in service and service['ca_certificates']:
-            service['ca_certificates'] = json.dumps(service['ca_certificates'])
-        if 'tags' in service and service['tags']:
-            service['tags'] = json.dumps(service['tags'])
+        if "ca_certificates" in service and service["ca_certificates"]:
+            service["ca_certificates"] = json.dumps(service["ca_certificates"])
+        if "tags" in service and service["tags"]:
+            service["tags"] = json.dumps(service["tags"])
     return services_data
 
 
@@ -98,7 +102,9 @@ def load_services(
     )
 
 
-def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]) -> None:
+def cleanup(
+    neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]
+) -> None:
     """
     Remove stale services from the graph.
     """
@@ -107,7 +113,7 @@ def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any])
     WHERE s.lastupdated <> $UPDATE_TAG
     DETACH DELETE s
     """
-    neo4j_session.run(query, UPDATE_TAG=common_job_parameters['UPDATE_TAG'])
+    neo4j_session.run(query, UPDATE_TAG=common_job_parameters["UPDATE_TAG"])
 
 
 @timeit

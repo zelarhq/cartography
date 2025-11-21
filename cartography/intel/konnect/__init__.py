@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def start_konnect_ingestion(neo4j_session: neo4j.Session, config: Config) -> None:
     """
     Starts the Kong Konnect ingestion process.
-    
+
     :param neo4j_session: Neo4j session
     :param config: Config object
     :return: None
@@ -32,7 +32,7 @@ def start_konnect_ingestion(neo4j_session: neo4j.Session, config: Config) -> Non
 
     # Set default API URL if not provided
     api_url = config.konnect_api_url or "https://us.api.konghq.com/v2"
-    
+
     common_job_parameters = {
         "UPDATE_TAG": config.update_tag,
     }

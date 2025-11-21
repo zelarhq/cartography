@@ -24,7 +24,7 @@ def sync(
 ) -> None:
     """
     Sync Kong Konnect Certificates.
-    
+
     :param neo4j_session: Neo4j session
     :param api_token: Kong Konnect API token
     :param api_url: Kong Konnect API base URL
@@ -34,23 +34,23 @@ def sync(
     """
     # Get list of control plane IDs from the graph
     control_plane_ids = get_control_plane_ids(neo4j_session)
-    
+
     all_certificates = []
     for cp_id in control_plane_ids:
         certs_data = get(api_token, api_url, cp_id)
         transformed_data = transform(certs_data, cp_id)
         all_certificates.extend(transformed_data)
-    
+
     if all_certificates:
         load_certificates(neo4j_session, all_certificates, update_tag)
-    
+
     cleanup(neo4j_session, common_job_parameters)
 
 
 def get_control_plane_ids(neo4j_session: neo4j.Session) -> List[str]:
     """
     Get list of control plane IDs from the graph.
-    
+
     :param neo4j_session: Neo4j session
     :return: List of control plane IDs
     """
@@ -66,7 +66,7 @@ def get_control_plane_ids(neo4j_session: neo4j.Session) -> List[str]:
 def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, Any]]:
     """
     Fetch certificates for a specific control plane from Kong Konnect API.
-    
+
     :param api_token: Kong Konnect API token
     :param api_url: Kong Konnect API base URL
     :param control_plane_id: Control plane ID
@@ -77,29 +77,33 @@ def get(api_token: str, api_url: str, control_plane_id: str) -> List[Dict[str, A
         "Authorization": f"Bearer {api_token}",
         "Content-Type": "application/json",
     }
-    
+
     all_certificates = []
     url = f"{api_url}/control-planes/{control_plane_id}/core-entities/certificates"
-    
+
     while url:
         logger.info(f"Fetching certificates from {url}")
         response = session.get(url, headers=headers, timeout=_TIMEOUT)
         response.raise_for_status()
         data = response.json()
-        
+
         if "data" in data:
             all_certificates.extend(data["data"])
-        
+
         url = data.get("next")
-    
-    logger.info(f"Fetched {len(all_certificates)} certificates for control plane {control_plane_id}")
+
+    logger.info(
+        f"Fetched {len(all_certificates)} certificates for control plane {control_plane_id}"
+    )
     return all_certificates
 
 
-def transform(certificates: List[Dict[str, Any]], control_plane_id: str) -> List[Dict[str, Any]]:
+def transform(
+    certificates: List[Dict[str, Any]], control_plane_id: str
+) -> List[Dict[str, Any]]:
     """
     Transform certificates data.
-    
+
     :param certificates: Raw certificates data from API
     :param control_plane_id: Control plane ID
     :return: Transformed certificates data
@@ -109,17 +113,19 @@ def transform(certificates: List[Dict[str, Any]], control_plane_id: str) -> List
         # Truncate cert data for storage (we don't want to store full PEM in graph)
         cert_data = cert.get("cert", "")
         cert_preview = cert_data[:100] + "..." if len(cert_data) > 100 else cert_data
-        
-        transformed.append({
-            "id": cert.get("id"),
-            "cert": cert_preview,  # Store truncated version
-            "snis": cert.get("snis", []),
-            "tags": cert.get("tags", []),
-            "created_at": cert.get("created_at"),
-            "updated_at": cert.get("updated_at"),
-            "control_plane_id": control_plane_id,
-        })
-    
+
+        transformed.append(
+            {
+                "id": cert.get("id"),
+                "cert": cert_preview,  # Store truncated version
+                "snis": cert.get("snis", []),
+                "tags": cert.get("tags", []),
+                "created_at": cert.get("created_at"),
+                "updated_at": cert.get("updated_at"),
+                "control_plane_id": control_plane_id,
+            }
+        )
+
     return transformed
 
 
@@ -130,7 +136,7 @@ def load_certificates(
 ) -> None:
     """
     Load certificates into Neo4j.
-    
+
     :param neo4j_session: Neo4j session
     :param data: Transformed certificates data
     :param update_tag: Update tag
@@ -143,7 +149,7 @@ def load_certificates(
         if cp_id not in by_control_plane:
             by_control_plane[cp_id] = []
         by_control_plane[cp_id].append(cert)
-    
+
     # Load certificates for each control plane
     for cp_id, certs in by_control_plane.items():
         load(
@@ -155,10 +161,12 @@ def load_certificates(
         )
 
 
-def cleanup(neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]) -> None:
+def cleanup(
+    neo4j_session: neo4j.Session, common_job_parameters: Dict[str, Any]
+) -> None:
     """
     Clean up stale certificates.
-    
+
     :param neo4j_session: Neo4j session
     :param common_job_parameters: Common job parameters
     :return: None

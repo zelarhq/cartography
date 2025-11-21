@@ -26,13 +26,13 @@ class KonnectControlPlaneToOrganizationRelProperties(CartographyRelProperties):
 
 
 @dataclass(frozen=True)
-# (:KonnectControlPlane)-[:RESOURCE]->(:KonnectOrganization)
+# (:KonnectOrganization)-[:RESOURCE]->(:KonnectControlPlane)
 class KonnectControlPlaneToOrganizationRel(CartographyRelSchema):
     target_node_label: str = "KonnectOrganization"
     target_node_matcher: TargetNodeMatcher = make_target_node_matcher(
         {"id": PropertyRef("ORG_ID", set_in_kwargs=True)},
     )
-    direction: LinkDirection = LinkDirection.OUTWARD
+    direction: LinkDirection = LinkDirection.INWARD
     rel_label: str = "RESOURCE"
     properties: KonnectControlPlaneToOrganizationRelProperties = (
         KonnectControlPlaneToOrganizationRelProperties()

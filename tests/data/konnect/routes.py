@@ -1,0 +1,56 @@
+# Mock data for Kong Konnect Routes API responses
+
+KONNECT_ROUTES_RESPONSE = {
+    "data": [
+        {
+            "id": "route-123",
+            "name": "user-api-route",
+            "protocols": ["https", "http"],
+            "methods": ["GET", "POST"],
+            "hosts": ["api.example.com"],
+            "paths": ["/api/users"],
+            "headers": {"X-Custom-Header": "value"},
+            "https_redirect_status_code": 426,
+            "regex_priority": 0,
+            "strip_path": False,
+            "preserve_host": True,
+            "request_buffering": True,
+            "response_buffering": True,
+            "snis": [],
+            "sources": [],
+            "destinations": [],
+            "tags": ["production", "api"],
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-20T14:22:00Z",
+            "service": {
+                "id": "svc-123",
+            },
+        },
+        {
+            "id": "route-456",
+            "name": "payment-api-route",
+            "protocols": ["https"],
+            "methods": ["POST", "PUT"],
+            "hosts": ["payments.example.com"],
+            "paths": ["/payments"],
+            "headers": None,
+            "https_redirect_status_code": 426,
+            "regex_priority": 0,
+            "strip_path": False,
+            "preserve_host": True,
+            "request_buffering": True,
+            "response_buffering": True,
+            "snis": [],
+            "sources": [],
+            "destinations": [],
+            "tags": ["production", "payment"],
+            "created_at": "2024-02-01T08:15:00Z",
+            "updated_at": "2024-02-05T16:45:00Z",
+            "service": {
+                "id": "svc-456",
+            },
+        },
+    ],
+    "offset": None,
+}
+
