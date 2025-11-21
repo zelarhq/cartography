@@ -214,6 +214,12 @@ class Config:
     :param slack_teams: List of Slack team IDs to sync. Optional.
     :type slack_channels_memberships: bool
     :param slack_channels_memberships: If True, sync Slack channel membership data. Optional.
+    :type konnect_api_token: str
+    :param konnect_api_token: Kong Konnect API token for authentication. Optional.
+    :type konnect_api_url: str
+    :param konnect_api_url: Kong Konnect API base URL, e.g. https://us.api.konghq.com/v2. Optional.
+    :type konnect_org_id: str
+    :param konnect_org_id: Kong Konnect organization ID. Optional.
     """
 
     def __init__(
@@ -323,6 +329,9 @@ class Config:
         slack_token=None,
         slack_teams=None,
         slack_channels_memberships=False,
+        konnect_api_token=None,
+        konnect_api_url=None,
+        konnect_org_id=None,
     ):
         self.neo4j_uri = neo4j_uri
         self.neo4j_user = neo4j_user
@@ -431,3 +440,6 @@ class Config:
         self.slack_token = slack_token
         self.slack_teams = slack_teams
         self.slack_channels_memberships = slack_channels_memberships
+        self.konnect_api_token = konnect_api_token
+        self.konnect_api_url = konnect_api_url
+        self.konnect_org_id = konnect_org_id
