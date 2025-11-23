@@ -11,15 +11,15 @@ def test_transform_certificates():
         certificates_data,
         "cp-123",
     )
-    
+
     assert len(transformed) == 2
-    
+
     cert1 = transformed[0]
     assert cert1["id"] == "cert-123"
     assert cert1["control_plane_id"] == "cp-123"
     assert cert1["snis"] == ["api.example.com", "www.example.com"]
     assert cert1["tags"] == ["production", "ssl"]
-    
+
     # Check that cert is truncated
     assert len(cert1["cert"]) <= 103  # 100 chars + "..."
     assert cert1["cert"].endswith("...")
@@ -43,7 +43,6 @@ def test_transform_certificates_short_cert():
         short_cert_data,
         "cp-123",
     )
-    
+
     assert transformed[0]["cert"] == "short"
     assert not transformed[0]["cert"].endswith("...")
-

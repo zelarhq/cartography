@@ -13,9 +13,9 @@ def test_transform_services():
         services_data,
         "cp-123",
     )
-    
+
     assert len(transformed) == 2
-    
+
     svc1 = transformed[0]
     assert svc1["id"] == "svc-123"
     assert svc1["name"] == "user-service"
@@ -23,12 +23,12 @@ def test_transform_services():
     assert svc1["port"] == 443
     assert svc1["protocol"] == "https"
     assert svc1["control_plane_id"] == "cp-123"
-    
+
     # Check that lists are converted to JSON strings
     assert isinstance(svc1["ca_certificates"], str)
     ca_certs = json.loads(svc1["ca_certificates"])
     assert ca_certs == ["cert-1", "cert-2"]
-    
+
     assert isinstance(svc1["tags"], str)
     tags = json.loads(svc1["tags"])
     assert tags == ["production", "api"]
@@ -61,10 +61,9 @@ def test_transform_services_with_empty_lists():
         services_data,
         "cp-123",
     )
-    
+
     svc = transformed[0]
     assert svc["id"] == "svc-empty"
     # Empty lists should remain as empty lists (not converted to JSON)
     assert svc["ca_certificates"] == []
     assert svc["tags"] == []
-

@@ -27,7 +27,9 @@ def _ensure_local_neo4j_has_test_control_planes(neo4j_session):
 def _mock_get_dp_client_certificates(api_token, api_url, control_plane_id):
     """Mock get function that only returns data for cp-123."""
     if control_plane_id == "cp-123":
-        return tests.data.konnect.dp_client_certificates.KONNECT_DP_CLIENT_CERTIFICATES_RESPONSE["data"]
+        return tests.data.konnect.dp_client_certificates.KONNECT_DP_CLIENT_CERTIFICATES_RESPONSE[
+            "data"
+        ]
     return []
 
 
@@ -84,4 +86,3 @@ def test_load_dp_client_certificates(mock_api, neo4j_session):
         )
         == expected_rels
     )
-

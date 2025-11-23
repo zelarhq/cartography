@@ -84,4 +84,3 @@ def test_load_dp_nodes(mock_api, neo4j_session):
         )
         == expected_rels
     )
-

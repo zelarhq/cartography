@@ -25,4 +25,3 @@ KONNECT_DP_CLIENT_CERTIFICATES_RESPONSE = {
     ],
     "next": None,
 }
-

@@ -25,4 +25,3 @@ KONNECT_DP_NODES_RESPONSE = {
     ],
     "next": None,
 }
-

@@ -75,10 +75,7 @@ def test_load_routes(mock_api, neo4j_session):
         ("route-123", "user-api-route"),
         ("route-456", "payment-api-route"),
     }
-    assert (
-        check_nodes(neo4j_session, "KonnectRoute", ["id", "name"])
-        == expected_nodes
-    )
+    assert check_nodes(neo4j_session, "KonnectRoute", ["id", "name"]) == expected_nodes
 
     # Assert Routes are connected with Control Planes (ControlPlane -> Route)
     expected_cp_rels = {
@@ -115,4 +112,3 @@ def test_load_routes(mock_api, neo4j_session):
         )
         == expected_service_rels
     )
-

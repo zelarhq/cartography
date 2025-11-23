@@ -31,4 +31,3 @@ KONNECT_CERTIFICATES_RESPONSE = {
     ],
     "next": None,
 }
-

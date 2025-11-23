@@ -12,7 +12,9 @@ TEST_ORG_ID = "org-123"
 @patch.object(
     cartography.intel.konnect.control_planes,
     "get",
-    return_value=tests.data.konnect.control_planes.KONNECT_CONTROL_PLANES_RESPONSE["data"],
+    return_value=tests.data.konnect.control_planes.KONNECT_CONTROL_PLANES_RESPONSE[
+        "data"
+    ],
 )
 def test_load_control_planes(mock_api, neo4j_session):
     """
@@ -71,4 +73,3 @@ def test_load_control_planes(mock_api, neo4j_session):
         )
         == expected_rels
     )
-

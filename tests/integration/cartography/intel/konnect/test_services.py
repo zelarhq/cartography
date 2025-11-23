@@ -63,8 +63,7 @@ def test_load_services(mock_api, neo4j_session):
         ("svc-456", "payment-service"),
     }
     assert (
-        check_nodes(neo4j_session, "KonnectService", ["id", "name"])
-        == expected_nodes
+        check_nodes(neo4j_session, "KonnectService", ["id", "name"]) == expected_nodes
     )
 
     # Assert Services are connected with Control Planes (ControlPlane -> Service)
@@ -84,4 +83,3 @@ def test_load_services(mock_api, neo4j_session):
         )
         == expected_rels
     )
-

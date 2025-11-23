@@ -11,9 +11,9 @@ def test_transform_dp_nodes():
         dp_nodes_data,
         "cp-123",
     )
-    
+
     assert len(transformed) == 2
-    
+
     node1 = transformed[0]
     assert node1["id"] == "dp-node-123"
     assert node1["hostname"] == "dp-node-1.example.com"
@@ -22,4 +22,3 @@ def test_transform_dp_nodes():
     assert node1["last_ping"] == "2024-01-20T14:22:00Z"
     assert node1["config_hash"] == "abc123def456"
     assert node1["control_plane_id"] == "cp-123"
-

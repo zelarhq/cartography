@@ -53,4 +53,3 @@ KONNECT_ROUTES_RESPONSE = {
     ],
     "offset": None,
 }
-

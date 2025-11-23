@@ -62,10 +62,7 @@ def test_load_certificates(mock_api, neo4j_session):
         ("cert-123",),
         ("cert-456",),
     }
-    assert (
-        check_nodes(neo4j_session, "KonnectCertificate", ["id"])
-        == expected_nodes
-    )
+    assert check_nodes(neo4j_session, "KonnectCertificate", ["id"]) == expected_nodes
 
     # Assert Certificates are connected with Control Planes (ControlPlane -> Certificate)
     expected_rels = {
@@ -84,4 +81,3 @@ def test_load_certificates(mock_api, neo4j_session):
         )
         == expected_rels
     )
-

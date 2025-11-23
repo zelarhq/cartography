@@ -39,4 +39,3 @@ KONNECT_SERVICES_RESPONSE = {
     ],
     "offset": None,
 }
-

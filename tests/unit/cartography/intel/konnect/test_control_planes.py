@@ -11,9 +11,9 @@ def test_transform_control_planes():
         control_planes_data,
         "org-123",
     )
-    
+
     assert len(transformed) == 2
-    
+
     cp1 = transformed[0]
     assert cp1["id"] == "cp-123"
     assert cp1["name"] == "production-cp"
@@ -31,7 +31,6 @@ def test_transform_control_planes_without_org_id():
         control_planes_data,
         None,
     )
-    
+
     assert len(transformed) == 2
     assert transformed[0]["id"] == "cp-123"
-

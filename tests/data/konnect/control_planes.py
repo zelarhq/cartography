@@ -19,4 +19,3 @@ KONNECT_CONTROL_PLANES_RESPONSE = {
     ],
     "next": None,
 }
-
