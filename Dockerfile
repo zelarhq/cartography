@@ -14,11 +14,36 @@ ENV HOME=/var/cartography
 
 # Intermediate image to build the venv
 FROM base AS builder
+# Re-declare build args in this stage (Docker requires this per-stage).
+ARG VERSION_SPECIFIER
+ARG uid=10001
+ARG gid=10001
+
+# Install build-time OS deps needed when installing from source (setuptools-scm needs `git`).
+USER root
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Back to the non-root runtime user.
+USER ${uid}:${gid}
+
 # Install uv version 0.7.3
 COPY --from=ghcr.io/astral-sh/uv@sha256:87a04222b228501907f487b338ca6fc1514a93369bfce6930eb06c8d576e58a4 /uv /uvx /bin/
 # Install cartography
+#
+# Why: `uv tool install cartography${VERSION_SPECIFIER}` installs from PyPI. If VERSION_SPECIFIER is unset/empty,
+# the resulting image content changes over time and may not include recently-added CLI flags (e.g. `--konnect-*`).
+# Installing from the checked-out source tree (this repo) makes the image deterministic and keeps CLI args in sync
+# with the code you are building.
+COPY --chown=${uid}:${gid} . /src
 RUN ls -alh /var/cartography
-RUN uv tool install cartography${VERSION_SPECIFIER}
+RUN if [ -n "${VERSION_SPECIFIER}" ]; then \
+        uv tool install "cartography${VERSION_SPECIFIER}"; \
+    else \
+        uv tool install /src; \
+    fi
 RUN ls -alh /var/cartography
 
 
